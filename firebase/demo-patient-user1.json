@@ -1,0 +1,14 @@
+{
+  "patients": {
+    "user1": {
+      "spO2": 97.2,
+      "heartRate": 82,
+      "temperature": 36.8,
+      "humidity": 51.4,
+      "aqi": 43,
+      "gasLevel": 78.6,
+      "ecgValue": 1.12,
+      "timestamp": "2026-04-24T10:30:00.000Z"
+    }
+  }
+}

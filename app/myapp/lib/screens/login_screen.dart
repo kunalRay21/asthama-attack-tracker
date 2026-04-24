@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _login() {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields')), 
+        const SnackBar(content: Text('Please fill in all fields')),
       );
       return;
     }
@@ -34,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // Simulate login delay
     Future.delayed(const Duration(seconds: 2), () {
+      if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const DashboardScreen()),
       );
@@ -54,7 +55,8 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.health_and_safety, size: 80, color: Colors.blue),
+                const Icon(Icons.health_and_safety,
+                    size: 80, color: Colors.blue),
                 const SizedBox(height: 32),
                 const Text(
                   'Welcome to Asthma Monitor',
@@ -87,7 +89,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ElevatedButton(
                   onPressed: _isLoading ? null : _login,
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 48, vertical: 16),
                   ),
                   child: _isLoading
                       ? const SizedBox(

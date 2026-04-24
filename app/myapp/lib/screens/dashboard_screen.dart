@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/sensor_provider.dart';
+import '../provider/sensor_provider.dart';
 import '../widgets/sensor_card.dart';
 import '../widgets/alert_banner.dart';
 import '../widgets/sensor_graph.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  const DashboardScreen({super.key});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();

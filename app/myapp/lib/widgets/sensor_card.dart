@@ -9,14 +9,14 @@ class SensorCard extends StatelessWidget {
   final String normalRange;
 
   const SensorCard({
-    Key? key,
+    super.key,
     required this.label,
     required this.value,
     required this.unit,
     required this.icon,
     required this.isWarning,
     required this.normalRange,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -127,6 +127,7 @@ class SensorCard extends StatelessWidget {
             ),
           ),
         ),
-      );
+      ),
+    );
   }
 }

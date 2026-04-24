@@ -4,9 +4,9 @@ class AlertBanner extends StatelessWidget {
   final String message;
 
   const AlertBanner({
-    Key? key,
+    super.key,
     required this.message,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

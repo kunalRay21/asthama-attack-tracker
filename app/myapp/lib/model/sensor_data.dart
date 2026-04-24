@@ -21,15 +21,24 @@ class SensorData {
 
   // Convert from Firebase snapshot
   factory SensorData.fromMap(Map<dynamic, dynamic> map) {
+    DateTime parsedTimestamp = DateTime.now();
+    final rawTimestamp = map['timestamp'];
+
+    if (rawTimestamp is String) {
+      parsedTimestamp = DateTime.tryParse(rawTimestamp) ?? DateTime.now();
+    } else if (rawTimestamp is int) {
+      parsedTimestamp = DateTime.fromMillisecondsSinceEpoch(rawTimestamp);
+    }
+
     return SensorData(
       spO2: (map['spO2'] as num?)?.toDouble() ?? 0.0,
-      heartRate: map['heartRate'] as int? ?? 0,
+      heartRate: (map['heartRate'] as num?)?.toInt() ?? 0,
       temperature: (map['temperature'] as num?)?.toDouble() ?? 0.0,
       humidity: (map['humidity'] as num?)?.toDouble() ?? 0.0,
-      aqi: map['aqi'] as int? ?? 0,
+      aqi: (map['aqi'] as num?)?.toInt() ?? 0,
       gasLevel: (map['gasLevel'] as num?)?.toDouble() ?? 0.0,
       ecgValue: (map['ecgValue'] as num?)?.toDouble() ?? 0.0,
-      timestamp: DateTime.now(),
+      timestamp: parsedTimestamp,
     );
   }
 

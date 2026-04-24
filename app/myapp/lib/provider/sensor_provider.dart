@@ -1,35 +1,51 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:firebase_database/firebase_database.dart';
-import '../models/sensor_data.dart';
+import '../model/sensor_data.dart';
 
 class SensorProvider extends ChangeNotifier {
   SensorData? _sensorData;
   bool _isLoading = true;
   String? _error;
-  List<SensorData> _historicalData = [];
+  final List<SensorData> _historicalData = [];
 
   SensorData? get sensorData => _sensorData;
   bool get isLoading => _isLoading;
   String? get error => _error;
   List<SensorData> get historicalData => _historicalData;
 
-  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref('patients/user1');
+  static const String patientPath = 'patients/user1';
+  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref(patientPath);
+  StreamSubscription<DatabaseEvent>? _sensorSubscription;
 
   SensorProvider() {
     _initializeRealTimeListener();
   }
 
   void _initializeRealTimeListener() {
-    _dbRef.onValue.listen((event) {
+    _sensorSubscription = _dbRef.onValue.listen((event) {
       try {
         if (event.snapshot.exists) {
-          final data = event.snapshot.value as Map<dynamic, dynamic>;
+          final raw = event.snapshot.value;
+          if (raw is! Map) {
+            throw const FormatException(
+              'Unexpected data format at $patientPath. Expected object/map.',
+            );
+          }
+
+          final data = Map<dynamic, dynamic>.from(raw);
           _sensorData = SensorData.fromMap(data);
           _historicalData.add(_sensorData!);
+
           if (_historicalData.length > 100) {
             _historicalData.removeAt(0);
           }
+
           _error = null;
+        } else {
+          _sensorData = null;
+          _error = 'No data found at $patientPath';
         }
         _isLoading = false;
         notifyListeners();
@@ -47,8 +63,11 @@ class SensorProvider extends ChangeNotifier {
 
   // Alert system check
   bool isSpO2Low() => _sensorData != null && _sensorData!.spO2 < 94;
-  bool isHeartRateAbnormal() => _sensorData != null && (_sensorData!.heartRate < 60 || _sensorData!.heartRate > 100);
-  bool isTemperatureHigh() => _sensorData != null && _sensorData!.temperature > 38;
+  bool isHeartRateAbnormal() =>
+      _sensorData != null &&
+      (_sensorData!.heartRate < 60 || _sensorData!.heartRate > 100);
+  bool isTemperatureHigh() =>
+      _sensorData != null && _sensorData!.temperature > 38;
   bool isAQIHigh() => _sensorData != null && _sensorData!.aqi > 150;
 
   String getAlertMessage() {
@@ -61,6 +80,7 @@ class SensorProvider extends ChangeNotifier {
 
   @override
   void dispose() {
+    _sensorSubscription?.cancel();
     super.dispose();
   }
 }
