@@ -29,10 +29,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
+        return windows;
       case TargetPlatform.linux:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions are not configured for desktop platforms.',
-        );
+        return linux;
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -78,5 +77,25 @@ class DefaultFirebaseOptions {
     databaseURL: _databaseUrl,
     storageBucket: _storageBucket,
     iosBundleId: 'com.example.myapp',
+  );
+
+  // Desktop fallback options to avoid runtime init failure.
+  // For production desktop apps, generate exact values via FlutterFire CLI.
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: _apiKey,
+    appId: _webAppId,
+    messagingSenderId: _messagingSenderId,
+    projectId: _projectId,
+    databaseURL: _databaseUrl,
+    storageBucket: _storageBucket,
+  );
+
+  static const FirebaseOptions linux = FirebaseOptions(
+    apiKey: _apiKey,
+    appId: _webAppId,
+    messagingSenderId: _messagingSenderId,
+    projectId: _projectId,
+    databaseURL: _databaseUrl,
+    storageBucket: _storageBucket,
   );
 }
